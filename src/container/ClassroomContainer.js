@@ -16,6 +16,7 @@ class ClassroomContainer extends React.Component {
   }
   componentDidMount () {
     this.jitsiService = new JitsiService({
+      roomName: 'tuyenha',
       parentNode: document.querySelector('#conf'),
       userInfo: {
         displayName: Date.now(),
