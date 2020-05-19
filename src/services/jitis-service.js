@@ -42,7 +42,6 @@ class JitsiService extends EventEmitter {
       this.emit(eventNames.participantJoined, data)
       this.participants.push(data)
     })
-    this.onMessage = () => {}
     this.api.addEventListener(eventNames.endpointTextMessageReceived, data => {
       this.emit(message.message, data)
     })
