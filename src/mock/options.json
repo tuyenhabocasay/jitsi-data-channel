@@ -1,0 +1,15 @@
+
+  {
+  "roomName": "tuyenha",
+  "width": 500,
+  "height": 500,
+  "parentNode": null,
+  "configOverwrite": { "openBridgeChannel": true },
+  "interfaceConfigOverwrite": {
+    "filmStripOnly": true
+  },
+  "userInfo": {
+    "email": "hatontuyen@gmail.com",
+    "displayName": "Tuyen Ha"
+  }
+}

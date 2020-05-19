@@ -1,0 +1,12 @@
+{
+    "data": {
+        "senderInfo": {
+            "jid": "tuyenha@conference.meetsv-dev.1on1english.vn/18c29dba",
+            "id": "18c29dba"
+        },
+        "eventData": {
+            "name": "endpoint-text-message",
+            "text": "hello"
+        }
+    }
+}
