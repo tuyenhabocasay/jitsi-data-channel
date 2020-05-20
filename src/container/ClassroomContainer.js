@@ -16,13 +16,14 @@ class ClassroomContainer extends React.Component {
   }
   componentDidMount () {
     this.jitsiService = new JitsiService({
-      roomName: 'tuyenha',
+      roomName: 'tuyenha', // roomId
       parentNode: document.querySelector('#conf'),
       userInfo: {
-        displayName: Date.now(),
-        email: Date.now() + '@gmail.com'
+        displayName: Date.now(), // user display name
+        email: Date.now() + '@gmail.com' // user email
       }
     })
+    // this event is fired when user joined video conference
     this.jitsiService.on(eventNames.videoConferenceJoined, data => {
       /*
       data = {
@@ -34,6 +35,8 @@ class ClassroomContainer extends React.Component {
       */
       console.log('I am joined')
     })
+
+    // this event is fired when user recieve message from sender
     this.jitsiService.on(eventNames.message, data => {
       /*
        {
@@ -52,6 +55,8 @@ class ClassroomContainer extends React.Component {
       console.log('message comming')
       this.setState({ message: data })
     })
+
+    // this event is fired when there's issued with mic or webcam
     this.jitsiService.on(eventNames.mediaError, data => {
       /** 
        data =  {
@@ -65,6 +70,7 @@ class ClassroomContainer extends React.Component {
     })
   }
   componentWillUnmount () {
+    // remove all event listener if component unmount
     this.jitsiService.removeListeners();
     this.jitsiService.dispose()
   }
