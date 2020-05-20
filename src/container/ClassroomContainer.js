@@ -1,93 +1,36 @@
 import React from 'react'
 import JitsiService, { eventNames } from '../services/jitis-service'
 import './style.css'
+import Jitsi from 'react-jitsi'
 class ClassroomContainer extends React.Component {
   constructor (props) {
     super(props)
-    this.jitsiService = undefined
-    this.users = []
+    this.JitsiMeetAPI = null
     this.state = {
-      isReadyRtcDevices: true,
-      users: [],
-      message: undefined,
-      isExist: false,
-      role: ''
+      message: {}
     }
   }
-  componentDidMount () {
-    this.jitsiService = new JitsiService({
-      roomName: 'tuyenha', // roomId
-      parentNode: document.querySelector('#conf'),
-      userInfo: {
-        displayName: Date.now(), // user display name
-        email: Date.now() + '@gmail.com' // user email
-      }
-    })
-    // this event is fired when user joined video conference
-    this.jitsiService.on(eventNames.videoConferenceJoined, data => {
-      /*
-      data = {
-        roomName: string, // the room name of the conference
-        id: string, // the id of the local participant
-        displayName: string, // the display name of the local participant
-        avatarURL: string // the avatar URL of the local participant
-      }
-      */
-      console.log('I am joined')
-    })
-
-    // this event is fired when user recieve message from sender
-    this.jitsiService.on(eventNames.message, data => {
-      /*
-       {
-            "data": {
-                "senderInfo": {
-                    "jid": string,
-                    "id": string
-                },
-                "eventData": {
-                    "name": "endpoint-text-message",
-                    "text": string or JSON object
-                }
-            }
-        }
-      */
-      console.log('message comming')
-      this.setState({ message: data })
-    })
-
-    // this event is fired when there's issued with mic or webcam
-    this.jitsiService.on(eventNames.mediaError, data => {
-      /** 
-       data =  {
-      type: string, // A constant representing the overall type of the error.
-      message: string // Additional information about the error.
-      }
-       */
-      this.setState({
-        isReadyRtcDevices: false
-      })
-    })
-  }
-  componentWillUnmount () {
-    // remove all event listener if component unmount
-    this.jitsiService.removeListeners();
-    this.jitsiService.dispose()
-  }
-  handleGetUsers = () => {
-    this.setState({ participants: this.jitsiService.participants })
-  }
   handleSend = () => {
-    this.jitsiService.sendAll({ type: 'test', label: 'hello world' })
+    this._send("Hello world");
+  }
+  _onAPILoad = JitsiMeetAPI => {
+    console.log('init jitsi')
+    this.JitsiMeetAPI = JitsiMeetAPI
+    this.JitsiMeetAPI.addEventListener(
+      'endpointTextMessageReceived',
+      this._onMessage
+    )
+  }
+  _onMessage = data => {
+    // To do here when recieving message
+    console.log('message comming')
+    console.log(data)
+    this.setState({message: data})
+  }
+  _send = data => {
+    return this.JitsiMeetAPI.executeCommand('sendEndpointTextMessage', '', data)
   }
 
-  handleGetDevices = async ()=>{
-   const devices = await this.jitsiService.api.getCurrentDevices();
-   console.log(devices)
-  }  
-  handleToggleAudio = ()=>{
-    this.jitsiService.api.executeCommand('toggleAudio');
-  }
   render () {
     return (
       <div className='VC-grid-container'>
@@ -100,12 +43,17 @@ class ClassroomContainer extends React.Component {
             Message cooming:
             <br /> {JSON.stringify(this.state.message)}
           </p>
-          <button onClick={this.handleGetUsers}>Get all users</button>
           <button onClick={this.handleSend}>Send data</button>
-          <button onClick={this.handleGetDevices}>Get all devices</button>
-          <button onClick={this.handleToggleAudio}>Mute audio</button>
         </div>
-        <div className='VC-grid-item' id='conf'></div>
+        <Jitsi
+          roomName={'tuyenha'}
+          displayName={'Tuyen Ha'}
+          password={''}
+          config={{
+            openBridgeChannel: true
+          }}
+          onAPILoad={this._onAPILoad}
+        />
       </div>
     )
   }
